@@ -1,0 +1,97 @@
+``` {r markdown}
+## This is my first notebook on Jupiter
+library(ggplot2)
+library(dplyr)
+library(help = "datasets")
+## This gives me a complete lists of all available datasets
+```
+``` markdown
+## Lets try some of analysis from the notebook above
+glimpse(CO2)
+## We shall use this data
+## Carbon Dioxide Uptake in Grass Plants
+```
+
+``` markdown
+## Lets try some ggplots
+ggplot(CO2, aes(conc, uptake, color = Plant))+
+    geom_line()+
+    facet_wrap(~Treatment)+
+    labs(title= "Uptake of CO2 in plants grouped by treatment")
+## From my analysis a plant was only subjected to one type of treatment
+```
+
+``` markdown
+ggplot(CO2, aes(conc, uptake, group = Treatment, color = Treatment))+
+    geom_line()+
+    facet_wrap(~Plant)+
+    labs(title= "Uptake of CO2 in plants grouped by individual Plant")
+```
+
+``` markdown
+##Lets now group them by type
+ggplot(CO2, aes(conc, uptake, color= Plant))+
+    geom_line()+
+    facet_wrap(~Type)+
+    labs(title= "Uptake of CO2 in plants grouped by type")
+
+## Plants in Quebec seem to have a higher uptake of CO2 compared to Missippi plants
+```
+
+``` markdown
+ggplot(CO2, aes(conc, uptake, color= Plant))+
+    geom_line()+
+    facet_wrap(Type~Treatment)+
+    labs(title= "Uptake of CO2 in plants grouped by type and treatment")
+
+## This shows a perfect presentation of Plants classified by type and treatment
+## Chilled plants in missippi have the lowest uptake of CO2
+## However generally chilled plants have a lower intake compared to nonchilled plants
+
+## Lets see if there is a linear relationship between the uptake of CO2 and the conc
+
+ggplot(CO2, aes(x=conc, y=uptake, color = Plant))+
+    geom_line()+
+    geom_smooth(method= "lm", se = FALSE)+
+    facet_wrap(Type~Treatment)
+## The linear curve clearly doesnt apply
+## We could try a logarithmic relationship
+
+ggplot(CO2, aes(x=conc, y=uptake, color = Plant))+
+    geom_line()+
+    geom_smooth(method= "lm", se = FALSE)+
+    facet_wrap(~Plant)
+
+ggplot(CO2, aes(x=conc, y=uptake, color = Plant))+
+    geom_line()+
+    geom_smooth(method= "lm", se = FALSE)+
+    facet_wrap(~Plant)+
+    scale_y_log10()
+
+## I expected a logarithmic relationship but it seems to be constant
+
+qplot(conc, uptake, data=CO2, geom=c("point", "smooth"), 
+   method="lm", formula= y~x, color= Treatment, 
+   main="Regression of Conc on Uptake by Treatment type", 
+   xlab="Conc", ylab="Uptake of CO2")
+## This clearly compares the Regression of conc vs uptake by treatment
+
+## Now I try some other visualization methods
+ggplot(CO2, aes(x= conc, y= uptake))+
+    geom_boxplot()+
+    geom_jitter(aes(color= Plant))+
+    facet_wrap(Type~Treatment)
+## This shows a boxplot and jitter plot
+
+## Geom_violin
+ggplot(CO2, aes(x= conc, y= uptake))+
+    geom_violin()+
+    geom_jitter(aes(color= Plant))+
+    facet_wrap(Type~Treatment)
+    
+## Lets try a histogram
+ggplot(CO2, aes(x= uptake))+
+    geom_histogram(binwidth = 1)+
+    facet_wrap(~Treatment)
+    
+```
